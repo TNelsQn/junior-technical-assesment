@@ -11,7 +11,7 @@ import { Product } from '../models/product.model';
 })
 export class ProductFormComponent implements OnChanges {
   @Input() product?: Product;
-  @Output() save = new EventEmitter<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>>();
+  @Output() save = new EventEmitter<Omit<Product, 'createdAt' | 'updatedAt'>>();
   @Output() cancel = new EventEmitter<void>();
 
   productForm: FormGroup;
@@ -19,7 +19,7 @@ export class ProductFormComponent implements OnChanges {
 
   constructor(private fb: FormBuilder) {
     this.productForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('^[a-zA-Z0-9 ]*$')],],
       description: ['', [Validators.required, Validators.minLength(10)]],
       department: ['', Validators.required]
     });
