@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { ProductFormComponent } from './product-form/product-form.component';
 import { ProductService } from './services/product.service';
 import { Product } from './models/product.model';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -78,6 +78,7 @@ describe('AppComponent', () => {
 
   it('should create a new product', fakeAsync(() => {
     const newProduct = {
+      id: '1',
       name: 'New Product',
       description: 'New Description',
       department: 'New Department'
@@ -92,6 +93,7 @@ describe('AppComponent', () => {
 
   it('should update an existing product', fakeAsync(() => {
     const updateData = {
+      id: '1',
       name: 'Updated Product',
       description: 'Updated Description',
       department: 'Updated Department'
@@ -134,6 +136,8 @@ describe('AppComponent', () => {
 
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(component.isLoading).toBe(false);
+    expect(component.cardError.errorMessage).toBe('An error occurred while loading. Please try again.');
+    expect(component.cardError.cardId).toBeFalsy();
 
     consoleErrorSpy.mockRestore();
   }));
@@ -143,6 +147,7 @@ describe('AppComponent', () => {
     productService.createProduct.mockReturnValueOnce(throwError(() => new Error('Test error')));
 
     component.onSaveProduct({
+      id: '1',
       name: 'Test',
       description: 'Test',
       department: 'Test'
@@ -150,6 +155,8 @@ describe('AppComponent', () => {
     tick(500);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(component.cardError.errorMessage).toBe('An error occurred while creating Test. Please try again.');
+    expect(component.cardError.cardId).toBe('1');
     consoleErrorSpy.mockRestore();
   }));
 
@@ -159,6 +166,7 @@ describe('AppComponent', () => {
 
     component.selectedProduct = mockProducts[0];
     component.onSaveProduct({
+      id: '1',
       name: 'Test',
       description: 'Test',
       department: 'Test'
@@ -166,6 +174,8 @@ describe('AppComponent', () => {
     tick(500);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(component.cardError.errorMessage).toBe('An error occurred while updating Test. Please try again.');
+    expect(component.cardError.cardId).toBe('1');
     consoleErrorSpy.mockRestore();
   }));
 
@@ -177,6 +187,8 @@ describe('AppComponent', () => {
     tick(500);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(component.cardError.errorMessage).toBe('An error occurred while deleting Test Product 1. Please try again.');
+    expect(component.cardError.cardId).toBe('1');
     consoleErrorSpy.mockRestore();
   }));
 });

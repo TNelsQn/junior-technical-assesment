@@ -2,41 +2,51 @@
 <main class="min-h-screen bg-gray-50 p-8">
   <div class="mx-auto max-w-7xl space-y-8">
     <!-- Product Form -->
-    <app-product-form [product]="selectedProduct" (save)="onSaveProduct($event)" (cancel)="onCancelForm()" class="mb-8"></app-product-form>
+    <app-product-form
+      [product]="selectedProduct"
+      (save)="onSaveProduct($event)"
+      (cancel)="onCancelForm()"
+      class="mb-8"
+    ></app-product-form>
 
     <!-- Loading State -->
     <div *ngIf="isLoading" class="flex justify-center items-center py-8">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <div
+        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
+      ></div>
+    </div>
+
+    <!--Errors -->
+    <div *ngIf="!!cardError.errorMessage">
+      <h1 class="text-red-500 text-xl">{{ cardError.errorMessage }}</h1>
     </div>
 
     <!-- Products List -->
-    <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      *ngIf="!isLoading"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
       <!-- @fixme refactor this into it's own component -->
-      <div *ngFor="let product of products" class="bg-white rounded-lg shadow-md p-6">
-        <div class="flex justify-between items-start mb-4">
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
-            <p class="text-sm text-gray-500">{{ product.department }}</p>
-          </div>
-          <div class="flex space-x-2">
-            <button (click)="onEditProduct(product)" class="text-blue-600 hover:text-blue-800">
-              Edit
-            </button>
-            <button (click)="onDeleteProduct(product)" class="text-red-600 hover:text-red-800">
-              Delete
-            </button>
-          </div>
-        </div>
-        <p class="text-gray-700">{{ product.description }}</p>
-        <div class="mt-4 text-xs text-gray-500">
-          <p>Updated: {{ product.updatedAt | date:'mediumDate' }}</p>
-        </div>
+      <div
+        *ngFor="let product of products"
+        [ngClass]="{
+          'border border-red-500': cardError.cardId === product.id,
+        }"
+      >
+        <app-card
+          [product]="product"
+          (edit)="onEditProduct($event)"
+          (delete)="onDeleteProduct($event)"
+        >
+        </app-card>
       </div>
     </div>
 
     <!-- Empty State -->
     <div *ngIf="!isLoading && products.length === 0" class="text-center py-8">
-      <p class="text-gray-500">No products available. Add one using the form above.</p>
+      <p class="text-gray-500">
+        No products available. Add one using the form above.
+      </p>
     </div>
   </div>
 </main>
